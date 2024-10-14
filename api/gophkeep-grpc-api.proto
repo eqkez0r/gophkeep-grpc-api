@@ -1,0 +1,157 @@
+syntax = "proto3";
+
+package goph_keeper;
+
+option go_package = "goph-keeper.v1";
+
+service AuthService{
+  rpc Auth (AuthRequest) returns (AuthResponse);
+
+  rpc Register (RegisterRequest) returns (RegisterResponse);
+}
+
+enum AuthState {
+  AUTH_SUCCESS = 0;
+  AUTH_FAILED = 1;
+}
+
+enum RegisterState {
+  REGISTER_SUCCESS = 0;
+  REGISTER_FAILED = 1;
+  REGISTER_IS_EXIST = 2;
+}
+
+message AuthRequest {
+  string login = 1;
+  string password = 2;
+}
+
+message AuthResponse {
+  AuthState state = 1;
+  optional string token = 2;
+}
+
+message RegisterRequest{
+  string login = 1;
+  string password = 2;
+}
+
+message RegisterResponse{
+  RegisterState state = 1;
+  optional string token = 2;
+}
+
+service GophKeeper {
+  rpc SendCredentials(SendCredentialsRequest) returns (SendCredentialsResponse);
+  rpc GetCredentials(GetCredentialsRequest) returns (GetCredentialsResponse);
+
+  rpc SendText(SendTextRequest) returns (SendTextResponse);
+  rpc GetText (SendTextRequest) returns (GetTextRequest);
+
+  rpc SendCard(SendCardRequest) returns (SendCardResponse);
+  rpc GetCard(GetCardRequest) returns (GetCardResponse);
+
+  rpc GetAllData(GetAllDataRequest) returns (GetAllDataResponse);
+}
+
+enum SendDataState {
+  SEND_DATA_TOKEN_EXPIRED = 0;
+  SEND_DATA_SUCCESS = 1;
+  SEND_DATA_FAILED = 2;
+  SEND_DATA_IS_EXIST = 3;
+}
+
+enum GetDataState {
+  GET_DATA_TOKEN_EXPIRED = 0;
+  GET_DATA_FAILED = 1;
+  GET_DATA_IS_NOT_EXIST = 2;
+}
+
+message Credentials{
+  string credentials_name = 1;
+  string login = 2;
+  string password = 3;
+}
+
+message SendCredentialsRequest{
+  string token = 1;
+  Credentials credential = 2;
+}
+
+message SendCredentialsResponse{
+  SendDataState state = 1;
+}
+
+message GetCredentialsRequest{
+  string token = 1;
+}
+
+message GetCredentialsResponse{
+  GetDataState state = 1;
+  Credentials credentials = 2;
+}
+
+message Text{
+  string text_name = 1;
+  string text = 2;
+}
+
+message SendTextRequest{
+  string token = 1;
+  Text text = 2;
+}
+
+message SendTextResponse{
+  SendDataState state = 1;
+}
+
+message GetTextRequest{
+  string token = 1;
+  string name = 2;
+}
+
+message GetTextResponse{
+  GetDataState state = 1;
+  Text text = 2;
+}
+
+message Card{
+  string card_name = 1;
+  string card_number = 2;
+  string card_holder_name = 3;
+  string expiration_date = 4;
+  int32 cvv = 5;
+}
+
+message SendCardRequest{
+  string token = 1;
+  Card card = 2;
+}
+
+message SendCardResponse{
+  SendDataState state = 1;
+}
+
+message GetCardRequest{
+  string token = 1;
+  string name = 2;
+}
+
+message GetCardResponse{
+  GetDataState state = 1;
+  Card card = 2;
+}
+
+message GetAllDataRequest{
+  string token = 1;
+}
+
+message GetAllDataResponse{
+  GetDataState state = 1;
+  repeated Credentials credentials = 2;
+  repeated Text texts = 3;
+  repeated Card cards = 4;
+}
+
+
+
