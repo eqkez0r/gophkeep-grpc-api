@@ -13,12 +13,14 @@ service AuthService{
 enum AuthState {
   AUTH_SUCCESS = 0;
   AUTH_FAILED = 1;
+  AUTH_ERROR = 2;
 }
 
 enum RegisterState {
   REGISTER_SUCCESS = 0;
   REGISTER_FAILED = 1;
   REGISTER_IS_EXIST = 2;
+  REGISTER_ERROR = 3;
 }
 
 message AuthRequest {
@@ -59,12 +61,14 @@ enum SendDataState {
   SEND_DATA_SUCCESS = 1;
   SEND_DATA_FAILED = 2;
   SEND_DATA_IS_EXIST = 3;
+  SEND_DATA_ERROR = 4;
 }
 
 enum GetDataState {
   GET_DATA_TOKEN_EXPIRED = 0;
   GET_DATA_FAILED = 1;
   GET_DATA_IS_NOT_EXIST = 2;
+  GET_DATA_ERROR = 3;
 }
 
 message Credentials{
