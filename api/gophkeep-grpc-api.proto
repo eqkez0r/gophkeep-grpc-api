@@ -89,6 +89,7 @@ message SendCredentialsResponse{
 
 message GetCredentialsRequest{
   string token = 1;
+  string credential_name = 2;
 }
 
 message GetCredentialsResponse{
@@ -112,7 +113,7 @@ message SendTextResponse{
 
 message GetTextRequest{
   string token = 1;
-  string name = 2;
+  string text_name = 2;
 }
 
 message GetTextResponse{
@@ -139,7 +140,7 @@ message SendCardResponse{
 
 message GetCardRequest{
   string token = 1;
-  string name = 2;
+  string card_name = 2;
 }
 
 message GetCardResponse{
