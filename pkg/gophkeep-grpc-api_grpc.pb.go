@@ -147,10 +147,10 @@ type GophKeeperClient interface {
 	SendCredentials(ctx context.Context, in *SendCredentialsRequest, opts ...grpc.CallOption) (*SendCredentialsResponse, error)
 	GetCredentials(ctx context.Context, in *GetCredentialsRequest, opts ...grpc.CallOption) (*GetCredentialsResponse, error)
 	SendText(ctx context.Context, in *SendTextRequest, opts ...grpc.CallOption) (*SendTextResponse, error)
-	GetText(ctx context.Context, in *SendTextRequest, opts ...grpc.CallOption) (*GetTextRequest, error)
+	GetText(ctx context.Context, in *GetTextRequest, opts ...grpc.CallOption) (*GetTextResponse, error)
 	SendCard(ctx context.Context, in *SendCardRequest, opts ...grpc.CallOption) (*SendCardResponse, error)
 	GetCard(ctx context.Context, in *GetCardRequest, opts ...grpc.CallOption) (*GetCardResponse, error)
-	GetAllData(ctx context.Context, in *GetAllDataRequest, opts ...grpc.CallOption) (*GetAllDataResponse, error)
+	Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error)
 }
 
 type gophKeeperClient struct {
@@ -188,8 +188,8 @@ func (c *gophKeeperClient) SendText(ctx context.Context, in *SendTextRequest, op
 	return out, nil
 }
 
-func (c *gophKeeperClient) GetText(ctx context.Context, in *SendTextRequest, opts ...grpc.CallOption) (*GetTextRequest, error) {
-	out := new(GetTextRequest)
+func (c *gophKeeperClient) GetText(ctx context.Context, in *GetTextRequest, opts ...grpc.CallOption) (*GetTextResponse, error) {
+	out := new(GetTextResponse)
 	err := c.cc.Invoke(ctx, "/goph_keeper.GophKeeper/GetText", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -215,9 +215,9 @@ func (c *gophKeeperClient) GetCard(ctx context.Context, in *GetCardRequest, opts
 	return out, nil
 }
 
-func (c *gophKeeperClient) GetAllData(ctx context.Context, in *GetAllDataRequest, opts ...grpc.CallOption) (*GetAllDataResponse, error) {
-	out := new(GetAllDataResponse)
-	err := c.cc.Invoke(ctx, "/goph_keeper.GophKeeper/GetAllData", in, out, opts...)
+func (c *gophKeeperClient) Sync(ctx context.Context, in *SyncRequest, opts ...grpc.CallOption) (*SyncResponse, error) {
+	out := new(SyncResponse)
+	err := c.cc.Invoke(ctx, "/goph_keeper.GophKeeper/Sync", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -231,10 +231,10 @@ type GophKeeperServer interface {
 	SendCredentials(context.Context, *SendCredentialsRequest) (*SendCredentialsResponse, error)
 	GetCredentials(context.Context, *GetCredentialsRequest) (*GetCredentialsResponse, error)
 	SendText(context.Context, *SendTextRequest) (*SendTextResponse, error)
-	GetText(context.Context, *SendTextRequest) (*GetTextRequest, error)
+	GetText(context.Context, *GetTextRequest) (*GetTextResponse, error)
 	SendCard(context.Context, *SendCardRequest) (*SendCardResponse, error)
 	GetCard(context.Context, *GetCardRequest) (*GetCardResponse, error)
-	GetAllData(context.Context, *GetAllDataRequest) (*GetAllDataResponse, error)
+	Sync(context.Context, *SyncRequest) (*SyncResponse, error)
 	mustEmbedUnimplementedGophKeeperServer()
 }
 
@@ -251,7 +251,7 @@ func (UnimplementedGophKeeperServer) GetCredentials(context.Context, *GetCredent
 func (UnimplementedGophKeeperServer) SendText(context.Context, *SendTextRequest) (*SendTextResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendText not implemented")
 }
-func (UnimplementedGophKeeperServer) GetText(context.Context, *SendTextRequest) (*GetTextRequest, error) {
+func (UnimplementedGophKeeperServer) GetText(context.Context, *GetTextRequest) (*GetTextResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetText not implemented")
 }
 func (UnimplementedGophKeeperServer) SendCard(context.Context, *SendCardRequest) (*SendCardResponse, error) {
@@ -260,8 +260,8 @@ func (UnimplementedGophKeeperServer) SendCard(context.Context, *SendCardRequest)
 func (UnimplementedGophKeeperServer) GetCard(context.Context, *GetCardRequest) (*GetCardResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCard not implemented")
 }
-func (UnimplementedGophKeeperServer) GetAllData(context.Context, *GetAllDataRequest) (*GetAllDataResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAllData not implemented")
+func (UnimplementedGophKeeperServer) Sync(context.Context, *SyncRequest) (*SyncResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Sync not implemented")
 }
 func (UnimplementedGophKeeperServer) mustEmbedUnimplementedGophKeeperServer() {}
 
@@ -331,7 +331,7 @@ func _GophKeeper_SendText_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 func _GophKeeper_GetText_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(SendTextRequest)
+	in := new(GetTextRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -343,7 +343,7 @@ func _GophKeeper_GetText_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/goph_keeper.GophKeeper/GetText",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GophKeeperServer).GetText(ctx, req.(*SendTextRequest))
+		return srv.(GophKeeperServer).GetText(ctx, req.(*GetTextRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -384,20 +384,20 @@ func _GophKeeper_GetCard_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
-func _GophKeeper_GetAllData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetAllDataRequest)
+func _GophKeeper_Sync_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SyncRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(GophKeeperServer).GetAllData(ctx, in)
+		return srv.(GophKeeperServer).Sync(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/goph_keeper.GophKeeper/GetAllData",
+		FullMethod: "/goph_keeper.GophKeeper/Sync",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(GophKeeperServer).GetAllData(ctx, req.(*GetAllDataRequest))
+		return srv.(GophKeeperServer).Sync(ctx, req.(*SyncRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -434,8 +434,8 @@ var GophKeeper_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _GophKeeper_GetCard_Handler,
 		},
 		{
-			MethodName: "GetAllData",
-			Handler:    _GophKeeper_GetAllData_Handler,
+			MethodName: "Sync",
+			Handler:    _GophKeeper_Sync_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

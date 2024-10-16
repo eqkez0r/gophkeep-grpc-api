@@ -53,7 +53,7 @@ service GophKeeper {
   rpc SendCard(SendCardRequest) returns (SendCardResponse);
   rpc GetCard(GetCardRequest) returns (GetCardResponse);
 
-  rpc GetAllData(GetAllDataRequest) returns (GetAllDataResponse);
+  rpc Sync(SyncRequest) returns (SyncResponse);
 }
 
 enum SendDataState {
@@ -148,15 +148,15 @@ message GetCardResponse{
   Card card = 2;
 }
 
-message GetAllDataRequest{
+message SyncRequest{
   string token = 1;
 }
 
-message GetAllDataResponse{
+message SyncResponse{
   GetDataState state = 1;
-  repeated Credentials credentials = 2;
-  repeated Text texts = 3;
-  repeated Card cards = 4;
+  repeated string credentials = 2;
+  repeated string texts = 3;
+  repeated string cards = 4;
 }
 
 
