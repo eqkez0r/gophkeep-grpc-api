@@ -48,7 +48,7 @@ service GophKeeper {
   rpc GetCredentials(GetCredentialsRequest) returns (GetCredentialsResponse);
 
   rpc SendText(SendTextRequest) returns (SendTextResponse);
-  rpc GetText (SendTextRequest) returns (GetTextResponse);
+  rpc GetText (GetTextRequest) returns (GetTextResponse);
 
   rpc SendCard(SendCardRequest) returns (SendCardResponse);
   rpc GetCard(GetCardRequest) returns (GetCardResponse);
