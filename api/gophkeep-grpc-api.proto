@@ -4,10 +4,20 @@ package goph_keeper;
 
 option go_package = "goph-keeper.v1";
 
-service AuthService{
+service GophKeeper {
   rpc Auth (AuthRequest) returns (AuthResponse);
-
   rpc Register (RegisterRequest) returns (RegisterResponse);
+
+  rpc SendCredentials(SendCredentialsRequest) returns (SendCredentialsResponse);
+  rpc GetCredentials(GetCredentialsRequest) returns (GetCredentialsResponse);
+
+  rpc SendText(SendTextRequest) returns (SendTextResponse);
+  rpc GetText (GetTextRequest) returns (GetTextResponse);
+
+  rpc SendCard(SendCardRequest) returns (SendCardResponse);
+  rpc GetCard(GetCardRequest) returns (GetCardResponse);
+
+  rpc Sync(SyncRequest) returns (SyncResponse);
 }
 
 enum AuthState {
@@ -41,19 +51,6 @@ message RegisterRequest{
 message RegisterResponse{
   RegisterState state = 1;
   optional string token = 2;
-}
-
-service GophKeeper {
-  rpc SendCredentials(SendCredentialsRequest) returns (SendCredentialsResponse);
-  rpc GetCredentials(GetCredentialsRequest) returns (GetCredentialsResponse);
-
-  rpc SendText(SendTextRequest) returns (SendTextResponse);
-  rpc GetText (GetTextRequest) returns (GetTextResponse);
-
-  rpc SendCard(SendCardRequest) returns (SendCardResponse);
-  rpc GetCard(GetCardRequest) returns (GetCardResponse);
-
-  rpc Sync(SyncRequest) returns (SyncResponse);
 }
 
 enum SendDataState {

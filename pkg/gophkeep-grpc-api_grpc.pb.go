@@ -18,132 +18,12 @@ import (
 // Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
-// AuthServiceClient is the client API for AuthService service.
-//
-// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
-type AuthServiceClient interface {
-	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
-	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
-}
-
-type authServiceClient struct {
-	cc grpc.ClientConnInterface
-}
-
-func NewAuthServiceClient(cc grpc.ClientConnInterface) AuthServiceClient {
-	return &authServiceClient{cc}
-}
-
-func (c *authServiceClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
-	out := new(AuthResponse)
-	err := c.cc.Invoke(ctx, "/goph_keeper.AuthService/Auth", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *authServiceClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
-	out := new(RegisterResponse)
-	err := c.cc.Invoke(ctx, "/goph_keeper.AuthService/Register", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-// AuthServiceServer is the server API for AuthService service.
-// All implementations must embed UnimplementedAuthServiceServer
-// for forward compatibility
-type AuthServiceServer interface {
-	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
-	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
-	mustEmbedUnimplementedAuthServiceServer()
-}
-
-// UnimplementedAuthServiceServer must be embedded to have forward compatible implementations.
-type UnimplementedAuthServiceServer struct {
-}
-
-func (UnimplementedAuthServiceServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
-}
-func (UnimplementedAuthServiceServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
-}
-func (UnimplementedAuthServiceServer) mustEmbedUnimplementedAuthServiceServer() {}
-
-// UnsafeAuthServiceServer may be embedded to opt out of forward compatibility for this service.
-// Use of this interface is not recommended, as added methods to AuthServiceServer will
-// result in compilation errors.
-type UnsafeAuthServiceServer interface {
-	mustEmbedUnimplementedAuthServiceServer()
-}
-
-func RegisterAuthServiceServer(s grpc.ServiceRegistrar, srv AuthServiceServer) {
-	s.RegisterService(&AuthService_ServiceDesc, srv)
-}
-
-func _AuthService_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(AuthRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).Auth(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/goph_keeper.AuthService/Auth",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Auth(ctx, req.(*AuthRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _AuthService_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(RegisterRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AuthServiceServer).Register(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/goph_keeper.AuthService/Register",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AuthServiceServer).Register(ctx, req.(*RegisterRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-// AuthService_ServiceDesc is the grpc.ServiceDesc for AuthService service.
-// It's only intended for direct use with grpc.RegisterService,
-// and not to be introspected or modified (even as a copy)
-var AuthService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "goph_keeper.AuthService",
-	HandlerType: (*AuthServiceServer)(nil),
-	Methods: []grpc.MethodDesc{
-		{
-			MethodName: "Auth",
-			Handler:    _AuthService_Auth_Handler,
-		},
-		{
-			MethodName: "Register",
-			Handler:    _AuthService_Register_Handler,
-		},
-	},
-	Streams:  []grpc.StreamDesc{},
-	Metadata: "gophkeep-grpc-api.proto",
-}
-
 // GophKeeperClient is the client API for GophKeeper service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type GophKeeperClient interface {
+	Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error)
+	Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error)
 	SendCredentials(ctx context.Context, in *SendCredentialsRequest, opts ...grpc.CallOption) (*SendCredentialsResponse, error)
 	GetCredentials(ctx context.Context, in *GetCredentialsRequest, opts ...grpc.CallOption) (*GetCredentialsResponse, error)
 	SendText(ctx context.Context, in *SendTextRequest, opts ...grpc.CallOption) (*SendTextResponse, error)
@@ -159,6 +39,24 @@ type gophKeeperClient struct {
 
 func NewGophKeeperClient(cc grpc.ClientConnInterface) GophKeeperClient {
 	return &gophKeeperClient{cc}
+}
+
+func (c *gophKeeperClient) Auth(ctx context.Context, in *AuthRequest, opts ...grpc.CallOption) (*AuthResponse, error) {
+	out := new(AuthResponse)
+	err := c.cc.Invoke(ctx, "/goph_keeper.GophKeeper/Auth", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *gophKeeperClient) Register(ctx context.Context, in *RegisterRequest, opts ...grpc.CallOption) (*RegisterResponse, error) {
+	out := new(RegisterResponse)
+	err := c.cc.Invoke(ctx, "/goph_keeper.GophKeeper/Register", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *gophKeeperClient) SendCredentials(ctx context.Context, in *SendCredentialsRequest, opts ...grpc.CallOption) (*SendCredentialsResponse, error) {
@@ -228,6 +126,8 @@ func (c *gophKeeperClient) Sync(ctx context.Context, in *SyncRequest, opts ...gr
 // All implementations must embed UnimplementedGophKeeperServer
 // for forward compatibility
 type GophKeeperServer interface {
+	Auth(context.Context, *AuthRequest) (*AuthResponse, error)
+	Register(context.Context, *RegisterRequest) (*RegisterResponse, error)
 	SendCredentials(context.Context, *SendCredentialsRequest) (*SendCredentialsResponse, error)
 	GetCredentials(context.Context, *GetCredentialsRequest) (*GetCredentialsResponse, error)
 	SendText(context.Context, *SendTextRequest) (*SendTextResponse, error)
@@ -242,6 +142,12 @@ type GophKeeperServer interface {
 type UnimplementedGophKeeperServer struct {
 }
 
+func (UnimplementedGophKeeperServer) Auth(context.Context, *AuthRequest) (*AuthResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Auth not implemented")
+}
+func (UnimplementedGophKeeperServer) Register(context.Context, *RegisterRequest) (*RegisterResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Register not implemented")
+}
 func (UnimplementedGophKeeperServer) SendCredentials(context.Context, *SendCredentialsRequest) (*SendCredentialsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SendCredentials not implemented")
 }
@@ -274,6 +180,42 @@ type UnsafeGophKeeperServer interface {
 
 func RegisterGophKeeperServer(s grpc.ServiceRegistrar, srv GophKeeperServer) {
 	s.RegisterService(&GophKeeper_ServiceDesc, srv)
+}
+
+func _GophKeeper_Auth_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AuthRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).Auth(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goph_keeper.GophKeeper/Auth",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).Auth(ctx, req.(*AuthRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _GophKeeper_Register_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RegisterRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(GophKeeperServer).Register(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/goph_keeper.GophKeeper/Register",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(GophKeeperServer).Register(ctx, req.(*RegisterRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _GophKeeper_SendCredentials_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -409,6 +351,14 @@ var GophKeeper_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "goph_keeper.GophKeeper",
 	HandlerType: (*GophKeeperServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Auth",
+			Handler:    _GophKeeper_Auth_Handler,
+		},
+		{
+			MethodName: "Register",
+			Handler:    _GophKeeper_Register_Handler,
+		},
 		{
 			MethodName: "SendCredentials",
 			Handler:    _GophKeeper_SendCredentials_Handler,
